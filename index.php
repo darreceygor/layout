@@ -10,6 +10,19 @@
 </head>
 <body>
 
+<?php 
+  $db = new PDO('mysql:host=localhost;'.'dbname=db_books;charset=utf8', 'root', '');
+  
+  $sentenciab = $db->prepare( "SELECT * FROM books");
+  $sentenciab->execute();
+  $books = $sentenciab->fetchAll(PDO::FETCH_OBJ);
+
+  $sentenciaa = $db->prepare( "SELECT * FROM autor");
+  $sentenciaa->execute();
+  $autor = $sentenciaa->fetchAll(PDO::FETCH_OBJ);
+  
+
+?>  
     <div class="container">
         
     <!-- FILA QUE CONTIENE EL MENU HEADER--> 
@@ -70,55 +83,38 @@
         <div class="row">
 
             <!-- COLUMNA CATEGORIAS 25% DE LA PANTALLA APROX-->
+            <?php
+            echo'
           <div class="col-3">
 
+
             <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
+';
+foreach ($autor as $au){
+      echo'          <div class="accordion-item">
                   <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                      Estados Unidos de Norteamerica
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$au->id_autor.'" aria-expanded="false" aria-controls="collapseOne">
+                      '.$au->name.'
                     </button>
                   </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                  <div id="collapse'.$au->id_autor.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       
                         <div class="btn-group me-1" role="group" aria-label="First group">
                             <button type="button" class="btn btn-outline-secondary">Edit</button>
                             <button type="button" class="btn btn-outline-secondary">Delete</button>
-
-                          </div>
+                        </div>
                     </div>
                   </div>
-                </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      Accordion Item #2
-                    </button>
-                  </h2>
-                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                      <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                    </div>
-                  </div>
-                </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                      Accordion Item #3
-                    </button>
-                  </h2>
-                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                      <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </div>';
+}
+     echo'         </div>
           </div>
 
           <!-- FIN COLUMNA CATEGORIAS -->
 
+          ';
+          ?>
           <!-- COLUMNA LISTADO GENERAL 75% DE LA PANTALLA APROX-->
           <div class="col-9">
             <p>
@@ -126,26 +122,31 @@
                     <thead>
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Autor</th>
                         <th scope="col">Country</th>
                         <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
+
+                    <?php 
+
+                    foreach ($books as $book) {
+                    echo'
                       <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <th scope="row">'.$book->id_book.'</th>
+                        <td>'.$book->b_title.'</td>
+                        <td>'.$book->b_autor.'</td>
                         <td>
                             <select class="form-select" aria-label="Default select example">
-                            <option selected>Elegir</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option selected>Elegir</option>';
+                            foreach ($autor as $aut){
+                              echo'<option value='.$aut->id_autor.'>'.$aut->name.'</option>';
+                             }
+                             echo'
                             </select>
+                         
                         </td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic example">
@@ -155,47 +156,10 @@
                               </div>
                         </td>
                       </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>
-                            <select class="form-select" aria-label="Default select example">
-                            <option selected>Elegir</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-secondary btn-sm"><img src="img/find.png" class="icon"></button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm"><img src="img/edit.png" class="icon"></button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm"><img src="img/delete.png" class="icon"></button>
-                              </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                        <td>
-                            <select class="form-select" aria-label="Default select example">
-                            <option selected>Elegir</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-secondary btn-sm"><img src="img/find.png" class="icon"></button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm"><img src="img/edit.png" class="icon"></button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm"><img src="img/delete.png" class="icon"></button>
-                              </div>
-                        </td>
-                      </tr>
+                      <tr>';
+                    }
+                      ?>
+                        
                     </tbody>
                   </table>
             </p>
